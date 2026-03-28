@@ -187,40 +187,98 @@
     });
   }
 
+  // ─── Matching custom : label texte → élément de page ────────────────────
+  function matchCustomField(signals, labelNorm) {
+    // Cherche si le label normalisé est contenu dans l'un des signaux
+    for (const signal of signals) {
+      if (signal.includes(labelNorm) || labelNorm.includes(signal)) return true;
+    }
+    return false;
+  }
+
   // ─── Point d'entrée ──────────────────────────────────────────────────────
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (message.action !== 'fill_form') return false;
-
-    const { data, settings } = message;
+    const { settings } = message;
     const { simulate_typing = true, highlight_fields = true } = settings || {};
 
-    const elements = getFormElements();
-    const total = elements.length;
-    let filled = 0;
-    const matched = new Set(); // un champ canonique → un seul élément
+    // ── Formulaire patient (champs canoniques) ──
+    if (message.action === 'fill_form') {
+      const { data } = message;
+      const elements = getFormElements();
+      const total = elements.length;
+      let filled = 0;
+      const matched = new Set();
 
-    for (const el of elements) {
-      const signals = getSignals(el);
-      const field = matchField(signals);
-      if (!field || matched.has(field)) continue;
+      for (const el of elements) {
+        const signals = getSignals(el);
+        const field = matchField(signals);
+        if (!field || matched.has(field)) continue;
 
-      let ok = false;
+        let ok = false;
+        if (el.tagName === 'SELECT') {
+          ok = fillSelect(el, field, data);
+        } else {
+          const value = resolveValue(field, data, el);
+          if (value) ok = fillInput(el, value, simulate_typing);
+        }
 
-      if (el.tagName === 'SELECT') {
-        ok = fillSelect(el, field, data);
-      } else {
-        const value = resolveValue(field, data, el);
-        if (value) ok = fillInput(el, value, simulate_typing);
+        if (ok) {
+          matched.add(field);
+          filled++;
+          if (highlight_fields) highlight(el);
+        }
       }
 
-      if (ok) {
-        matched.add(field);
-        filled++;
-        if (highlight_fields) highlight(el);
-      }
+      sendResponse({ filled, total });
+      return true;
     }
 
-    sendResponse({ filled, total });
-    return true; // canal async ouvert
+    // ── Formulaire custom (champs libres label → valeur) ──
+    if (message.action === 'fill_custom_form') {
+      const { fields } = message; // [{ label, value }]
+      const elements = getFormElements();
+      const total = elements.length;
+      let filled = 0;
+      const usedElements = new Set();
+
+      for (const { label, value } of fields) {
+        if (!label || value === undefined || value === '') continue;
+        const labelNorm = normalize(label);
+
+        for (const el of elements) {
+          if (usedElements.has(el)) continue;
+          const signals = getSignals(el);
+          if (!matchCustomField(signals, labelNorm)) continue;
+
+          let ok = false;
+          if (el.tagName === 'SELECT') {
+            // Pour un select custom, on essaie de matcher la valeur dans les options
+            for (const option of el.options) {
+              if (normalize(option.text).includes(normalize(value)) ||
+                  normalize(option.value).includes(normalize(value))) {
+                el.value = option.value;
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+                ok = true;
+                break;
+              }
+            }
+          } else {
+            ok = fillInput(el, value, simulate_typing);
+          }
+
+          if (ok) {
+            usedElements.add(el);
+            filled++;
+            if (highlight_fields) highlight(el);
+            break; // un label → un seul élément
+          }
+        }
+      }
+
+      sendResponse({ filled, total });
+      return true;
+    }
+
+    return false;
   });
 })();

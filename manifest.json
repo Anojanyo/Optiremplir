@@ -3,7 +3,7 @@
   "name": "OptiRemplir",
   "version": "1.0.0",
   "description": "Pré-remplissage automatique des formulaires mutuelles pour opticiens",
-  "permissions": ["activeTab", "storage", "scripting"],
+  "permissions": ["activeTab", "storage", "scripting", "windows"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup/popup.html",

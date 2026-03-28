@@ -21,6 +21,7 @@
       --text-dim:   #7a849e;
       --text-muted: #4a5268;
       --red:        #f75f5f;
+      --orange:     #f7a94f;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,30 +42,33 @@
       gap: 10px;
       padding: 16px 18px 0;
     }
-    .logo-icon {
-      font-size: 20px;
-      color: var(--accent);
+    .logo-icon { font-size: 20px; color: var(--accent); }
+    .logo-text { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+    .logo-text span { color: var(--accent); }
+
+    .btn-popout {
+      margin-left: auto;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 14px;
+      line-height: 1;
+      transition: border-color 0.15s, color 0.15s;
     }
-    .logo-text {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      color: var(--text);
-    }
-    .logo-text span {
-      color: var(--accent);
-    }
+    .btn-popout:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── Tabs ── */
     .tab-bar {
       display: flex;
-      gap: 0;
       padding: 12px 18px 0;
       border-bottom: 1px solid var(--border);
       margin-top: 4px;
     }
     .tab {
-      padding: 8px 14px;
+      padding: 8px 12px;
       font-size: 12px;
       font-weight: 500;
       color: var(--text-dim);
@@ -73,11 +77,9 @@
       margin-bottom: -1px;
       transition: color 0.15s, border-color 0.15s;
       user-select: none;
+      white-space: nowrap;
     }
-    .tab.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
     .tab:hover:not(.active) { color: var(--text); }
 
     /* ── Body ── */
@@ -92,9 +94,7 @@
     .body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     /* ── Sections ── */
-    .section {
-      margin-bottom: 16px;
-    }
+    .section { margin-bottom: 16px; }
     .section-title {
       font-size: 10px;
       font-weight: 600;
@@ -106,11 +106,10 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* ── Form grid ── */
+    /* ── Form grid (onglet Patient) ── */
     .row { display: flex; gap: 10px; margin-bottom: 8px; }
     .field { display: flex; flex-direction: column; flex: 1; }
     .field.w-third { flex: 0 0 calc(33.333% - 7px); }
-    .field.w-half  { flex: 0 0 calc(50% - 5px); }
 
     label {
       font-size: 10px;
@@ -133,20 +132,17 @@
       transition: border-color 0.15s;
       width: 100%;
     }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
     input::placeholder { color: var(--text-muted); }
     select { cursor: pointer; }
     select option { background: var(--surface2); }
 
     input#num_secu {
       font-family: 'DM Mono', monospace;
-      font-size: 13px;
       letter-spacing: 0.04em;
     }
 
-    /* ── Boutons ── */
+    /* ── Boutons principaux ── */
     .btn-fill {
       width: 100%;
       padding: 11px;
@@ -167,15 +163,27 @@
     }
     .btn-fill:hover { background: #3a7ae8; }
     .btn-fill:active { transform: scale(0.98); }
-    .btn-fill.success {
-      background: var(--green);
-      animation: flash 0.3s ease;
-    }
+    .btn-fill.success { background: var(--green); animation: flash 0.3s ease; }
+
     @keyframes flash {
       0%   { transform: scale(1); }
       50%  { transform: scale(1.02); }
       100% { transform: scale(1); }
     }
+
+    .btn-secondary {
+      padding: 7px 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
     .btn-clear {
       width: 100%;
@@ -192,67 +200,6 @@
     }
     .btn-clear:hover { border-color: var(--red); color: var(--red); }
 
-    /* ── Status ── */
-    .status {
-      font-size: 12px;
-      text-align: center;
-      color: var(--text-dim);
-      margin-top: 8px;
-      min-height: 18px;
-      transition: color 0.2s;
-    }
-    .status.ok  { color: var(--green); }
-    .status.err { color: var(--red); }
-
-    /* ── Tab content ── */
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* ── Réglages ── */
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .toggle-row:last-of-type { border-bottom: none; }
-    .toggle-label { font-size: 13px; color: var(--text); }
-    .toggle-desc  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-    .toggle {
-      position: relative;
-      width: 38px;
-      height: 22px;
-      flex-shrink: 0;
-    }
-    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
-    .toggle-slider {
-      position: absolute;
-      inset: 0;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .toggle-slider::before {
-      content: '';
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      left: 2px;
-      top: 2px;
-      background: var(--text-muted);
-      border-radius: 50%;
-      transition: transform 0.2s, background 0.2s;
-    }
-    .toggle input:checked + .toggle-slider { background: var(--accent-dim); border-color: var(--accent); }
-    .toggle input:checked + .toggle-slider::before {
-      transform: translateX(16px);
-      background: var(--accent);
-    }
-
     .btn-danger {
       width: 100%;
       padding: 9px;
@@ -267,6 +214,344 @@
       transition: background 0.15s;
     }
     .btn-danger:hover { background: rgba(247,95,95,0.1); }
+
+    /* ── Scan IA ── */
+    .scan-zone {
+      border: 1.5px dashed var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      transition: border-color 0.15s;
+    }
+    .scan-zone.dragover { border-color: var(--accent); background: rgba(79,142,247,0.05); }
+
+    .scan-upload-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn-scan-upload {
+      flex: 1;
+      padding: 9px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-scan-upload:hover { border-color: var(--accent); color: var(--accent); }
+
+    #scan-file-input { display: none; }
+
+    .scan-preview {
+      display: none;
+      margin-top: 10px;
+    }
+    .scan-preview img {
+      width: 100%;
+      max-height: 120px;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .scan-filename {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    .btn-analyze {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, #4f8ef7 0%, #7c5fe6 100%);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-analyze:hover { opacity: 0.9; }
+    .btn-analyze:active { transform: scale(0.98); }
+    .btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .scan-status {
+      font-size: 11px;
+      text-align: center;
+      color: var(--text-muted);
+      margin-top: 8px;
+      min-height: 16px;
+    }
+    .scan-status.ok  { color: var(--green); }
+    .scan-status.err { color: var(--red); }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* API key field */
+    .api-key-row { position: relative; }
+    .api-key-row input { padding-right: 36px; font-family: 'DM Mono', monospace; font-size: 12px; }
+    .btn-toggle-key {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px;
+    }
+    .btn-toggle-key:hover { color: var(--text); }
+
+    /* ── Status ── */
+    .status {
+      font-size: 12px;
+      text-align: center;
+      color: var(--text-dim);
+      margin-top: 8px;
+      min-height: 18px;
+    }
+    .status.ok  { color: var(--green); }
+    .status.err { color: var(--red); }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Réglages toggles ── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .toggle-row:last-of-type { border-bottom: none; }
+    .toggle-label { font-size: 13px; color: var(--text); }
+    .toggle-desc  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      left: 2px; top: 2px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--accent-dim); border-color: var(--accent); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--accent); }
+
+    /* ── Formulaires personnalisés ── */
+    .form-selector {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .form-selector select { flex: 1; }
+
+    .form-name-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .form-name-row input { flex: 1; font-size: 13px; font-weight: 500; }
+    .form-name-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 5px;
+    }
+
+    /* Liste des champs custom */
+    #custom-fields-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+
+    .custom-field-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      transition: border-color 0.15s;
+    }
+    .custom-field-row:focus-within { border-color: var(--border); }
+
+    .custom-field-label-input {
+      flex: 0 0 38%;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border);
+      border-radius: 0;
+      padding: 4px 8px 4px 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-dim);
+    }
+    .custom-field-label-input::placeholder { color: var(--text-muted); font-style: italic; }
+    .custom-field-label-input:focus { outline: none; color: var(--text); }
+
+    .custom-field-value-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 4px 0 4px 8px;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .custom-field-value-input::placeholder { color: var(--text-muted); }
+    .custom-field-value-input:focus { outline: none; }
+
+    .btn-remove-field {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .btn-remove-field:hover { color: var(--red); background: rgba(247,95,95,0.1); }
+
+    .btn-add-field {
+      width: 100%;
+      padding: 8px;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-add-field:hover { border-color: var(--accent); color: var(--accent); }
+
+    .fields-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .fields-header-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .fields-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .fields-col-labels {
+      display: flex;
+      gap: 6px;
+      padding: 0 10px;
+      margin-bottom: 4px;
+    }
+    .col-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .col-label.lbl { flex: 0 0 38%; }
+    .col-label.val { flex: 1; padding-left: 8px; }
+
+    .empty-fields {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .save-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .btn-save {
+      flex: 1;
+      padding: 9px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-save:hover { border-color: var(--green); color: var(--green); }
+    .btn-save.saved { border-color: var(--green); color: var(--green); }
+
+    .badge-saved {
+      font-size: 10px;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.3s;
+      align-self: center;
+    }
+    .badge-saved.show { opacity: 1; }
   </style>
 </head>
 <body>
@@ -274,15 +559,18 @@
   <div class="header">
     <span class="logo-icon">👁</span>
     <span class="logo-text">Opti<span>Remplir</span></span>
+    <button class="btn-popout" id="btn-popout" title="Ouvrir dans une fenêtre">⧉</button>
   </div>
 
   <div class="tab-bar">
-    <div class="tab active" data-tab="formulaire">Formulaire</div>
+    <div class="tab active" data-tab="formulaire">Patient</div>
+    <div class="tab" data-tab="perso">Formulaires</div>
     <div class="tab" data-tab="reglages">Réglages</div>
   </div>
 
-  <!-- ── Onglet Formulaire ── -->
   <div class="body">
+
+    <!-- ══ Onglet Patient (formulaire fixe) ══ -->
     <div class="tab-panel active" id="tab-formulaire">
 
       <div class="section">
@@ -382,6 +670,27 @@
         </div>
       </div>
 
+      <!-- ── Analyse IA ── -->
+      <div class="section">
+        <div class="section-title">Analyser un document</div>
+        <div class="scan-zone" id="scan-zone">
+          <div class="scan-upload-row">
+            <button class="btn-scan-upload" id="btn-scan-upload">
+              <span>📄</span> Choisir un fichier ou glisser
+            </button>
+            <input type="file" id="scan-file-input" accept="image/*,.pdf">
+          </div>
+          <div class="scan-preview" id="scan-preview">
+            <img id="scan-preview-img" src="" alt="">
+            <div class="scan-filename" id="scan-filename"></div>
+          </div>
+          <button class="btn-analyze" id="btn-analyze" disabled>
+            <span>✦</span> Analyser et pré-remplir
+          </button>
+          <div class="scan-status" id="scan-status"></div>
+        </div>
+      </div>
+
       <button class="btn-fill" id="btn-fill">
         <span>⚡</span> Remplir le formulaire
       </button>
@@ -390,7 +699,69 @@
 
     </div>
 
-    <!-- ── Onglet Réglages ── -->
+    <!-- ══ Onglet Formulaires personnalisés ══ -->
+    <div class="tab-panel" id="tab-perso">
+
+      <!-- Sélecteur de template -->
+      <div class="section">
+        <div class="section-title">Template actif</div>
+        <div class="form-selector">
+          <select id="template-select">
+            <option value="">— Choisir un formulaire —</option>
+          </select>
+          <button class="btn-secondary" id="btn-new-template">+ Nouveau</button>
+          <button class="btn-secondary" id="btn-delete-template" style="border-color: var(--border); color: var(--text-muted);">Suppr.</button>
+        </div>
+
+        <!-- Nom du template -->
+        <div id="template-editor" style="display:none;">
+          <div class="form-name-label">Nom du formulaire</div>
+          <div class="form-name-row">
+            <input type="text" id="template-name" placeholder="ex: Mutuelle Allianz, CPAM Hauts-de-Seine…">
+          </div>
+        </div>
+      </div>
+
+      <!-- Champs du template -->
+      <div id="template-fields-section" style="display:none;">
+        <div class="section">
+          <div class="fields-header">
+            <span class="fields-header-label">Champs</span>
+            <span class="fields-hint">Label = ce qui est sur la page cible</span>
+          </div>
+          <div class="fields-col-labels">
+            <span class="col-label lbl">Label (clé de matching)</span>
+            <span class="col-label val">Valeur à remplir</span>
+          </div>
+
+          <div id="custom-fields-list"></div>
+
+          <button class="btn-add-field" id="btn-add-field">
+            <span>+</span> Ajouter un champ
+          </button>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn-save" id="btn-save-template">Sauvegarder</button>
+          <span class="badge-saved" id="badge-saved">Sauvegardé ✓</span>
+        </div>
+
+        <button class="btn-fill" id="btn-fill-custom">
+          <span>⚡</span> Remplir avec ce formulaire
+        </button>
+        <div class="status" id="status-custom"></div>
+      </div>
+
+      <div id="template-empty-state" style="text-align:center; padding: 30px 0; color: var(--text-muted); font-size:13px;">
+        Créez un formulaire personnalisé<br>
+        <span style="font-size:11px; color: var(--text-muted); margin-top:6px; display:block;">
+          Ajoutez les champs présents sur les sites mutuelles avec leurs valeurs
+        </span>
+      </div>
+
+    </div>
+
+    <!-- ══ Onglet Réglages ══ -->
     <div class="tab-panel" id="tab-reglages">
 
       <div class="section">
@@ -421,7 +792,7 @@
         <div class="toggle-row">
           <div>
             <div class="toggle-label">Sauvegarder les données</div>
-            <div class="toggle-desc">Mémorise le formulaire entre les sessions</div>
+            <div class="toggle-desc">Mémorise le formulaire patient entre les sessions</div>
           </div>
           <label class="toggle">
             <input type="checkbox" id="setting-save_data" checked>
@@ -430,9 +801,24 @@
         </div>
       </div>
 
+      <div class="section" style="margin-top: 16px;">
+        <div class="section-title">Clé API Claude (analyse IA)</div>
+        <div style="margin-bottom: 6px;">
+          <label style="text-transform:none; font-size:11px; color: var(--text-muted); font-weight:400;">
+            Nécessaire pour analyser les documents. Obtenir une clé sur console.anthropic.com.
+          </label>
+        </div>
+        <div class="api-key-row">
+          <input type="password" id="api-key-input" placeholder="sk-ant-api03-…">
+          <button class="btn-toggle-key" id="btn-toggle-key" title="Afficher/masquer">👁</button>
+        </div>
+        <button class="btn-save" id="btn-save-api-key" style="margin-top:8px; width:100%;">Sauvegarder la clé</button>
+      </div>
+
       <button class="btn-danger" id="btn-clear-all">Effacer toutes les données</button>
 
     </div>
+
   </div>
 
   <script src="popup.js"></script>
