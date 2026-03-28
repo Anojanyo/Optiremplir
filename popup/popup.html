@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OptiRemplir</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #0f1117;
+      --surface:    #181c27;
+      --surface2:   #1f2536;
+      --border:     #2a3148;
+      --accent:     #4f8ef7;
+      --accent-dim: #2d4f8a;
+      --green:      #3ecf8e;
+      --green-dim:  #1a5c3f;
+      --text:       #e8eaf0;
+      --text-dim:   #7a849e;
+      --text-muted: #4a5268;
+      --red:        #f75f5f;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      width: 380px;
+      min-height: 200px;
+      font-size: 14px;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px 0;
+    }
+    .logo-icon {
+      font-size: 20px;
+      color: var(--accent);
+    }
+    .logo-text {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      padding: 12px 18px 0;
+      border-bottom: 1px solid var(--border);
+      margin-top: 4px;
+    }
+    .tab {
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tab:hover:not(.active) { color: var(--text); }
+
+    /* ── Body ── */
+    .body {
+      padding: 14px 18px;
+      max-height: 510px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .body::-webkit-scrollbar { width: 4px; }
+    .body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Sections ── */
+    .section {
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Form grid ── */
+    .row { display: flex; gap: 10px; margin-bottom: 8px; }
+    .field { display: flex; flex-direction: column; flex: 1; }
+    .field.w-third { flex: 0 0 calc(33.333% - 7px); }
+    .field.w-half  { flex: 0 0 calc(50% - 5px); }
+
+    label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    input, select, textarea {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 7px 10px;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    input::placeholder { color: var(--text-muted); }
+    select { cursor: pointer; }
+    select option { background: var(--surface2); }
+
+    input#num_secu {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Boutons ── */
+    .btn-fill {
+      width: 100%;
+      padding: 11px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 4px;
+    }
+    .btn-fill:hover { background: #3a7ae8; }
+    .btn-fill:active { transform: scale(0.98); }
+    .btn-fill.success {
+      background: var(--green);
+      animation: flash 0.3s ease;
+    }
+    @keyframes flash {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .btn-clear {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      margin-top: 6px;
+    }
+    .btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── Status ── */
+    .status {
+      font-size: 12px;
+      text-align: center;
+      color: var(--text-dim);
+      margin-top: 8px;
+      min-height: 18px;
+      transition: color 0.2s;
+    }
+    .status.ok  { color: var(--green); }
+    .status.err { color: var(--red); }
+
+    /* ── Tab content ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Réglages ── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .toggle-row:last-of-type { border-bottom: none; }
+    .toggle-label { font-size: 13px; color: var(--text); }
+    .toggle-desc  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .toggle {
+      position: relative;
+      width: 38px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 2px;
+      top: 2px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--accent-dim); border-color: var(--accent); }
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(16px);
+      background: var(--accent);
+    }
+
+    .btn-danger {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      border: 1px solid var(--red);
+      border-radius: 8px;
+      color: var(--red);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: background 0.15s;
+    }
+    .btn-danger:hover { background: rgba(247,95,95,0.1); }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <span class="logo-icon">👁</span>
+    <span class="logo-text">Opti<span>Remplir</span></span>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" data-tab="formulaire">Formulaire</div>
+    <div class="tab" data-tab="reglages">Réglages</div>
+  </div>
+
+  <!-- ── Onglet Formulaire ── -->
+  <div class="body">
+    <div class="tab-panel active" id="tab-formulaire">
+
+      <div class="section">
+        <div class="section-title">Identité</div>
+        <div class="row">
+          <div class="field w-third">
+            <label for="civilite">Civilité</label>
+            <select id="civilite">
+              <option value="">—</option>
+              <option value="M.">M.</option>
+              <option value="Mme">Mme</option>
+              <option value="Melle">Melle</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" placeholder="DUPONT">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" placeholder="Marie">
+          </div>
+          <div class="field">
+            <label for="date_naissance">Date de naissance</label>
+            <input type="date" id="date_naissance">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Sécurité sociale</div>
+        <div class="row">
+          <div class="field">
+            <label for="num_secu">Numéro de sécurité sociale</label>
+            <input type="text" id="num_secu" placeholder="1 89 08 92 036 050 57" maxlength="21">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field w-third">
+            <label for="code_regime">Régime</label>
+            <input type="text" id="code_regime" placeholder="01" maxlength="2">
+          </div>
+          <div class="field w-third">
+            <label for="caisse">Caisse</label>
+            <input type="text" id="caisse" placeholder="951" maxlength="3">
+          </div>
+          <div class="field">
+            <label for="centre">Centre</label>
+            <input type="text" id="centre" placeholder="9579" maxlength="4">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Coordonnées</div>
+        <div class="row">
+          <div class="field">
+            <label for="adresse">Adresse</label>
+            <input type="text" id="adresse" placeholder="12 rue des Lilas">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field w-third">
+            <label for="code_postal">Code postal</label>
+            <input type="text" id="code_postal" placeholder="75001" maxlength="5">
+          </div>
+          <div class="field">
+            <label for="ville">Ville</label>
+            <input type="text" id="ville" placeholder="Paris">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="telephone" placeholder="06 12 34 56 78">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="marie@exemple.fr">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Prescripteur</div>
+        <div class="row">
+          <div class="field">
+            <label for="nom_prescripteur">Nom ophtalmo</label>
+            <input type="text" id="nom_prescripteur" placeholder="Dr Martin">
+          </div>
+          <div class="field">
+            <label for="date_ordonnance">Date ordonnance</label>
+            <input type="date" id="date_ordonnance">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-fill" id="btn-fill">
+        <span>⚡</span> Remplir le formulaire
+      </button>
+      <div class="status" id="status"></div>
+      <button class="btn-clear" id="btn-clear">Effacer les données</button>
+
+    </div>
+
+    <!-- ── Onglet Réglages ── -->
+    <div class="tab-panel" id="tab-reglages">
+
+      <div class="section">
+        <div class="section-title">Comportement</div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Simuler la frappe</div>
+            <div class="toggle-desc">Déclenche les événements JS (React, Vue, Angular)</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-simulate_typing" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Surligner les champs</div>
+            <div class="toggle-desc">Outline vert 3s sur les champs remplis</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-highlight_fields" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Sauvegarder les données</div>
+            <div class="toggle-desc">Mémorise le formulaire entre les sessions</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-save_data" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <button class="btn-danger" id="btn-clear-all">Effacer toutes les données</button>
+
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
